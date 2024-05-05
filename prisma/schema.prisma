@@ -13,29 +13,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Admin {
-  id    String @id @default(uuid())
-  name  String
-  email String
+model User {
+  id            String          @id @default(uuid())
+  first_name    String
+  email         String          @unique
+  verified      Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  Publisher     Publisher?
+  Subscriptions Subscriptions[]
+  Otps          OTP[]
+}
+
+model OTP {
+  id        String   @id @default(uuid())
+  token     String
+  User      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id   String
+  createdAt DateTime @default(now())
 }
 
 model Publisher {
-  id                String       @id @default(uuid())
-  name              String
-  email             String       @unique
-  custom_url        String       @unique
-  remaining_invites Int          @default(10)
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
-  Subscribers       Subscriber[]
+  id         String       @id @default(uuid())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  User       User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id    String       @unique
+  workspaces Workspaces[]
 }
 
-model Subscriber {
-  id           String    @id @default(uuid())
+model Workspaces {
+  id           String          @id @default(uuid())
   name         String
-  email        String
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  Publisher    Publisher @relation(fields: [Publisher_id], references: [id])
-  Publisher_id String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  Publisher    Publisher       @relation(fields: [publisher_id], references: [id], onDelete: Cascade)
+  publisher_id String
+  subscribers  Subscriptions[]
+  post         Post[]
+}
+
+model Subscriptions {
+  id            String     @id @default(uuid())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  User          User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String
+  Workspaces    Workspaces @relation(fields: [workspaces_id], references: [id], onDelete: Cascade)
+  workspaces_id String
+}
+
+model Post {
+  id            String     @id @default(uuid())
+  title         String
+  audio         String
+  image         String
+  Workspaces    Workspaces @relation(fields: [workspaces_id], references: [id], onDelete: Cascade)
+  workspaces_id String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
