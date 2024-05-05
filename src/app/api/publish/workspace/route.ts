@@ -34,7 +34,10 @@ export async function GET(request: NextRequest) {
             audio: true,
             createdAt: true
           },
-          take: 1
+          take: 1,
+          orderBy: {
+            createdAt: 'desc'
+          }
         }
       }
     });

@@ -34,7 +34,7 @@ const PublishPage = () => {
 
   const { status, data: userData } = useSession();
 
-  const { data } = useQuery<Workspace[]>({
+  const { data } = useQuery<Workspace[], null>({
     errMsg: 'Error fetching workspaces',
     options: {
       method: 'GET'
@@ -175,6 +175,7 @@ const PublishPage = () => {
                                       </Button>
                                     </div>
                                     <audio src={post[0].audio} controls={true} className='w-full' />
+                                    <div className="text-sm text-gray-500 dark:text-gray-400">{formatDistanceToNow(new Date(post[0].createdAt), { addSuffix: true })}</div>
                                   </div>
                                 </CardContent>
                                 <CardFooter className='flex justify-between items-center'>
@@ -188,7 +189,6 @@ const PublishPage = () => {
                                       <span className='sr-only'>Delete Workspace</span>
                                     </Button>
                                   </div>
-                                  <div className="text-sm text-gray-500 dark:text-gray-400">{formatDistanceToNow(new Date(createdAt), { addSuffix: true })}</div>
                                 </CardFooter>
                               </Card>
                             </div>
