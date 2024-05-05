@@ -34,12 +34,13 @@ model OTP {
 }
 
 model Publisher {
-  id         String       @id @default(uuid())
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  User       User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id    String       @unique
+  id         String        @id @default(uuid())
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  User       User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id    String        @unique
   workspaces Workspaces[]
+  invites    InviteLinks[]
 }
 
 model Workspaces {
@@ -49,6 +50,8 @@ model Workspaces {
   updatedAt    DateTime        @updatedAt
   Publisher    Publisher       @relation(fields: [publisher_id], references: [id], onDelete: Cascade)
   publisher_id String
+  max_invites  Int             @default(10)
+  invite_links InviteLinks[]
   subscribers  Subscriptions[]
   post         Post[]
 }
@@ -72,4 +75,14 @@ model Post {
   workspaces_id String
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+}
+
+model InviteLinks {
+  id                String     @id @default(uuid())
+  unique_link       String     @unique
+  Publisher         Publisher  @relation(fields: [publisher_id], references: [id])
+  publisher_id      String
+  Workspaces        Workspaces @relation(fields: [workspaces_id], references: [id])
+  workspaces_id     String
+  createdAt         DateTime   @default(now())
 }

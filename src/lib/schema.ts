@@ -30,3 +30,26 @@ export const createPostSchema = z.object({
   image: z.string().min(1, { message: "This field has to be filled." }),
   workspace_id: z.string().min(1, { message: "This field has to be filled." }),
 });
+
+export const createWorkspaceInviteSchema = z.object({
+  email: z.string().min(1, { message: "This field has to be filled." }).email("Please enter a valid email."),
+  workspace_id: z.string().min(1, { message: "This field has to be filled." }),
+  user_email: z.string().min(1, { message: "This field has to be filled." }).email("Please enter a valid email."),
+});
+
+export const invitationSignInSchema = z.object({
+  email: z.string().min(1, { message: "This field has to be filled." }).email("Please enter a valid email."),
+  token: z.string().min(1, { message: "This field has to be filled." }),
+});
+
+export const invitationSignUpSchema = z.object({
+  email: z.string().min(1, { message: "This field has to be filled." }).email("Please enter a valid email."),
+  token: z.string().min(1, { message: "This field has to be filled." }),
+  first_name: z.string().min(1, { message: "This field has to be filled." })
+});
+
+export const inviteOtpSchema = z.object({
+  otp: z.string().min(4, { message: 'This field has to be filled.' }),
+  token: z.string().min(1, { message: "This field has to be filled." }),
+  email: z.string().min(1, { message: "This field has to be filled." }).email("Please enter a valid email."),
+});

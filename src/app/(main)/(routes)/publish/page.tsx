@@ -19,12 +19,14 @@ import { ShareIcon, Trash2 } from 'lucide-react';
 import CreatePost from './_components/post/createpost';
 import CreateWorkspace from './_components/workspace/createworkspace';
 
+import CreateInvite from './_components/invites/createinvite';
 import { deletePostAction } from './_components/post/delete-post';
 import { deleteWorkspaceAction } from './_components/workspace/delete-workspace';
 
 const PublishPage = () => {
   const [addWorkspaceOpen, setAddWorkspaceOpen] = useState(false);
   const [addPostOpen, setAddPostOpen] = useState(false);
+  const [createInviteOpen, setcreateInviteOpen] = useState(false);
   const [workspaceId, setWorkspaceId] = useState('');
   const [loading, setLoaidng] = useState(false);
 
@@ -80,6 +82,11 @@ const PublishPage = () => {
       setLoaidng(false);
       router.push('/publish/workspace/deleted');
     }
+  };
+
+  const handleInviteLinkAdd = (workspace_id: string) => {
+    setcreateInviteOpen(true);
+    setWorkspaceId(workspace_id);
   };
 
   return (
@@ -138,7 +145,7 @@ const PublishPage = () => {
                                   </CardContent>
                                   <CardFooter className='flex justify-between items-center'>
                                     <div className='flex items-center gap-2'>
-                                      <Button size={'icon'} variant={'ghost'} disabled={loading}>
+                                      <Button size={'icon'} variant={'ghost'} disabled={loading} onClick={() => handleInviteLinkAdd(id)}>
                                         <ShareIcon className='h-4 w-4' />
                                         <span className='sr-only'>Share</span>
                                       </Button>
@@ -172,7 +179,7 @@ const PublishPage = () => {
                                 </CardContent>
                                 <CardFooter className='flex justify-between items-center'>
                                   <div className='flex items-center gap-2'>
-                                    <Button size={'icon'} variant={'ghost'} disabled={loading}>
+                                    <Button size={'icon'} variant={'ghost'} disabled={loading} onClick={() => handleInviteLinkAdd(id)}>
                                       <ShareIcon className='h-4 w-4' />
                                       <span className='sr-only'>Share</span>
                                     </Button>
@@ -206,6 +213,13 @@ const PublishPage = () => {
       <CreatePost
         addPostOpen={addPostOpen}
         setAddPostOpen={setAddPostOpen}
+        email={userData ? userData.user.email : ''}
+        workspaceId={workspaceId}
+      />
+
+      <CreateInvite
+        createInviteOpen={createInviteOpen}
+        setcreateInviteOpen={setcreateInviteOpen}
         email={userData ? userData.user.email : ''}
         workspaceId={workspaceId}
       />
