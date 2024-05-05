@@ -53,3 +53,8 @@ export const inviteOtpSchema = z.object({
   token: z.string().min(1, { message: "This field has to be filled." }),
   email: z.string().min(1, { message: "This field has to be filled." }).email("Please enter a valid email."),
 });
+
+export const postSchema = z.object({
+  workspace_id: z.string().min(1, { message: "This field has to be filled." }),
+  email: z.string().min(1, { message: "This field has to be filled." }).email("Please enter a valid email."),
+});

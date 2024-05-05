@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const useQuery = <T,>({
+const useQuery = <T, G>({
   queryFn,
   options,
   errMsg,
@@ -17,10 +17,12 @@ const useQuery = <T,>({
 
   const [data, setData] = useState<{
     message: string,
-    data: T | null
+    data: T | null,
+    other: G | null
   }>({
     message: '',
-    data: null
+    data: null,
+    other: null
   });
   const [isError, setIsError] = useState<string | null>(null);
 
