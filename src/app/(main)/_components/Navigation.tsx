@@ -7,9 +7,12 @@ import { usePathname } from 'next/navigation';
 
 import { useMediaQuery } from 'usehooks-ts';
 
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { NavLinks } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { NavLinks } from '@/utils/constants';
-import { ChevronsLeft, Megaphone, MenuIcon } from 'lucide-react';
+import { ChevronsLeft, Megaphone, MenuIcon, SearchIcon } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 
 const Navigation = () => {
   const pathname = usePathname();
@@ -99,35 +102,43 @@ const Navigation = () => {
       <aside
         ref={sideBarRef}
         className={cn(
-          "group/sidebar h-full bg-secondary overflow-y-auto relative flex flex-col z-[99999]",
+          "group/sidebar h-full bg-secondary overflow-y-auto relative flex flex-col z-[999]",
           isResetting && "transition-all ease-in-out duration-300",
           isMobile && 'w-0'
         )}
       >
-        <div className='flex flex-col gap-2'>
-          <div className="flex h-[60px] items-center border-b px-6">
-            <Link className="flex items-center gap-2 font-semibold" href="#">
-              <Megaphone className="h-6 w-6" />
-              <span>Central Sync Hub</span>
-            </Link>
+        <div className='flex flex-col gap-2 justify-between h-full'>
+          <div className='flex flex-col'>
+            <div className="flex h-[60px] items-center border-b px-6">
+              <Link className="flex items-center gap-2 font-semibold" href="/dashboard">
+                <Megaphone className="h-6 w-6" />
+                <span>Central Sync Hub</span>
+              </Link>
+            </div>
+
+            <div className="flex-1 overflow-auto py-2">
+              <nav className="flex flex-col items-start px-4 text-sm font-medium">
+                {NavLinks.map((data, index) => (
+                  <Link
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2 text-primary/50 transition-all hover:text-primary w-full",
+                      pathname === data.path && "bg-gray-300 rounded-lg text-primary"
+                    )}
+                    href={data.path}
+                    key={index}
+                  >
+                    <data.icon className='h-4 w-4' />
+                    {data.title}
+                  </Link>
+                ))}
+              </nav>
+            </div>
           </div>
 
-          <div className="flex-1 overflow-auto py-2">
-            <nav className="flex flex-col items-start px-4 text-sm font-medium">
-              {NavLinks.map((data, index) => (
-                <Link
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2 text-primary/50 transition-all hover:text-primary w-full",
-                    pathname === data.path && "bg-gray-300 rounded-lg text-primary"
-                  )}
-                  href={data.path}
-                  key={index}
-                >
-                  <data.icon className='h-4 w-4' />
-                  {data.title}
-                </Link>
-              ))}
-            </nav>
+          <div className='px-6 py-2'>
+            <Button className='w-full' onClick={() => signOut({ redirect: true, callbackUrl: '/' })}>
+              Sign out
+            </Button>
           </div>
         </div>
 
@@ -152,13 +163,25 @@ const Navigation = () => {
       <div
         ref={navbarRef}
         className={cn(
-          "absolute top-0 z-[99999] left-60 w-[calc(100%-240px)]",
+          "absolute top-0 z-[99] left-60 w-[calc(100%-240px)]",
           isResetting && "transition-all ease-in-out duration-300",
           isMobile && "left-0 w-full",
         )}
       >
-        <nav className='bg-transparent px-3 py-2 w-full'>
-          {isCollapsed && <MenuIcon onClick={resetWidth} className='h-6 w-6 text-muted-foreground' role='button' />}
+        <nav className='bg-transparent px-3 py-2 w-full flex items-center gap-2'>
+          {isCollapsed && <MenuIcon role='button' onClick={resetWidth} className="h-6 w-6 text-muted-foreground" />}
+          <div className="w-full flex-1">
+            <form>
+              <div className="relative">
+                <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <Input
+                  className="w-full bg-white shadow-none appearance-none pl-8 md:w-2/3 lg:w-1/3 dark:bg-gray-950"
+                  placeholder="Search..."
+                  type="search"
+                />
+              </div>
+            </form>
+          </div>
         </nav>
       </div>
     </>
