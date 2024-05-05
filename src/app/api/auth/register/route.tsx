@@ -1,4 +1,4 @@
-import { AuthEmailTemplate } from "@/lib/EmailTemplates";
+import VerifyEmail from "@/emails/email-verify";
 import prisma from "@/lib/prisma";
 import { authSignUpSchema } from "@/lib/schema";
 import { generateOTP } from "@/lib/utils";
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       const token = jwt.sign(
         { otp },
         process.env.OTP_SECRET || 'dev',
-        { expiresIn: 5 * 60 } // 5 minutes in seconds
+        { expiresIn: '5m' }
       );
 
       await prisma.oTP.create({
@@ -55,9 +55,9 @@ export async function POST(request: NextRequest) {
       await resend.emails.send({
         from: 'Central Sync Hub <no-reply@centralsynchub.com>',
         to: [`${user.email}`],
-        subject: 'Test Mail',
-        react: AuthEmailTemplate({
-          otp
+        subject: 'Important: Verify your email',
+        react: VerifyEmail({
+          verificationCode: otp
         }),
       });
 

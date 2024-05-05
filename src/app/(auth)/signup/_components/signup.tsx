@@ -45,7 +45,7 @@ const SignUp = () => {
         if (response.status === 201) {
           setEmail(values.email);
 
-          router.replace('/signup/verify-email-address');
+          router.replace('/signup/verify');
         }
       } else {
         const error = await response.json();

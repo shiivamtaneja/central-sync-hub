@@ -53,24 +53,6 @@ const SignIn = () => {
     } catch (error) {
       console.error("Error " + error);
     }
-    // try {
-    //   const response = await signIn('credentials', {
-    //     redirect: false,
-    //     email: values.email,
-    //     callbackUrl: '/dashboard'
-    //   });
-
-    //   if (response) {
-    //     if (response.error) {
-    //       form.setError('email', { message: response.error });
-    //     } else {
-    //       router.replace('/dashboard');
-    //     }
-    //   }
-
-    // } catch (error) {
-    //   console.error("Error " + error);
-    // }
   };
 
   return (
