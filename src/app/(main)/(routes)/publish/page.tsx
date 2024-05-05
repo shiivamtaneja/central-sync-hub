@@ -39,7 +39,7 @@ const PublishPage = () => {
     options: {
       method: 'GET'
     },
-    queryFn: `/publish/${userData?.user.email}/workspace`,
+    queryFn: `/publish/workspace?p_id=${userData?.user.email}`,
     status
   });
 
