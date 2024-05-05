@@ -1,11 +1,15 @@
+import { NextRequest, NextResponse } from "next/server";
+
+import jwt from 'jsonwebtoken';
+
+import { Resend } from 'resend';
+
 import VerifyEmail from "@/emails/email-verify";
-import { AuthEmailTemplate } from "@/lib/EmailTemplates";
+
+import { generateOTP } from "@/lib/utils";
+
 import prisma from "@/lib/prisma";
 import { authSignInSchema } from "@/lib/schema";
-import { generateOTP } from "@/lib/utils";
-import jwt from 'jsonwebtoken';
-import { NextRequest, NextResponse } from "next/server";
-import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

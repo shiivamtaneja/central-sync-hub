@@ -1,13 +1,10 @@
-// import { AuthEmailTemplate } from "@/lib/EmailTemplates";
+import { NextRequest, NextResponse } from "next/server";
+
+import jwt from 'jsonwebtoken';
+
 import { currTime } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 import { authOtpSchema } from "@/lib/schema";
-import jwt from 'jsonwebtoken';
-import { NextRequest, NextResponse } from "next/server";
-
-// import { Resend } from 'resend';
-
-// const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
