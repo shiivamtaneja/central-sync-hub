@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react';
 
 import useQuery from '@/hooks/useQuery';
 
+import { cn } from '@/lib/utils';
 import { Post, Workspace } from '@/types/publish';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -16,13 +17,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { ShareIcon, Trash2 } from 'lucide-react';
 import CreatePost from './_components/post/createpost';
-import { deletePostAction } from './_components/post/delete-post';
 import CreateWorkspace from './_components/workspace/createworkspace';
+
+import { deletePostAction } from './_components/post/delete-post';
+import { deleteWorkspaceAction } from './_components/workspace/delete-workspace';
 
 const PublishPage = () => {
   const [addWorkspaceOpen, setAddWorkspaceOpen] = useState(false);
   const [addPostOpen, setAddPostOpen] = useState(false);
   const [workspaceId, setWorkspaceId] = useState('');
+  const [loading, setLoaidng] = useState(false);
 
   const router = useRouter();
 
@@ -43,11 +47,38 @@ const PublishPage = () => {
   };
 
   const deletePost = async (post: Post) => {
+    setLoaidng(true);
+    const confirm = window.confirm('Are you sure you want to delete this post?');
+
+    if (!confirm) {
+      setLoaidng(false);
+      return;
+    }
+
     const res = await deletePostAction(post);
 
     if (res.sucess) {
       alert('Post Deleted');
+      setLoaidng(false);
       router.push('/publish/post/deleted');
+    }
+  };
+
+  const deleteWorkspace = async (workspace_id: string) => {
+    setLoaidng(true);
+    const confirm = window.confirm('Are you sure you want to delete this workspace?');
+
+    if (!confirm) {
+      setLoaidng(false);
+      return;
+    }
+
+    const res = await deleteWorkspaceAction(workspace_id);
+
+    if (res.sucess) {
+      alert('Workspace Deleted');
+      setLoaidng(false);
+      router.push('/publish/workspace/deleted');
     }
   };
 
@@ -93,20 +124,27 @@ const PublishPage = () => {
                           {post.length === 0 ?
                             <>
                               <div className='md:w-fit w-full'>
-                                <Card className='flex flex-col'>
+                                <Card className={cn(
+                                  'flex flex-col',
+                                  loading && 'opacity-50 cursor-not-allowed'
+                                )}>
                                   <CardContent className='py-3'>
                                     <div className="flex flex-col gap-4">
                                       <p className="text-gray-500 dark:text-gray-400">
                                         No post yet
                                       </p>
-                                      <Button onClick={() => handlePostAdd(id)}>Add Post</Button>
+                                      <Button onClick={() => handlePostAdd(id)} disabled={loading}>Add Post</Button>
                                     </div>
                                   </CardContent>
                                   <CardFooter className='flex justify-between items-center'>
                                     <div className='flex items-center gap-2'>
-                                      <Button size={'icon'} variant={'ghost'}>
+                                      <Button size={'icon'} variant={'ghost'} disabled={loading}>
                                         <ShareIcon className='h-4 w-4' />
                                         <span className='sr-only'>Share</span>
+                                      </Button>
+                                      <Button size={'icon'} variant={'ghost'} onClick={() => deleteWorkspace(id)} disabled={loading}>
+                                        <Trash2 className='h-4 w-4' />
+                                        <span className='sr-only'>Delete Workspace</span>
                                       </Button>
                                     </div>
                                     <div className="text-sm text-gray-500 dark:text-gray-400">{formatDistanceToNow(new Date(createdAt), { addSuffix: true })}</div>
@@ -115,24 +153,35 @@ const PublishPage = () => {
                               </div>
                             </> :
                             <div className='md:w-96 w-full'>
-                              <Card className='flex flex-col'>
-                                <CardContent className='py-3'>
-                                  <div className="flex flex-col gap-4">
-                                    <h3 className="font-semibold text-lg">{post[0].title}</h3>
+                              <Card className={cn(
+                                'flex flex-col',
+                                loading && 'opacity-50 cursor-not-allowed'
+                              )}>
+                                <CardContent className='py-3 gap-4 flex flex-col'>
+                                  <p className=''>Latest Post</p>
+                                  <div className="flex flex-col gap-4 border rounded-md p-3">
+                                    <div className='flex justify-between items-center'>
+                                      <h3 className="font-semibold text-lg">{post[0].title}</h3>
+                                      <Button size={'icon'} variant={'ghost'} onClick={() => deletePost(post[0])} disabled={loading}>
+                                        <Trash2 className='h-4 w-4' />
+                                        <span className='sr-only'>Delete Post</span>
+                                      </Button>
+                                    </div>
+                                    <audio src={post[0].audio} controls={true} className='w-full' />
                                   </div>
                                 </CardContent>
                                 <CardFooter className='flex justify-between items-center'>
                                   <div className='flex items-center gap-2'>
-                                    <Button size={'icon'} variant={'ghost'}>
+                                    <Button size={'icon'} variant={'ghost'} disabled={loading}>
                                       <ShareIcon className='h-4 w-4' />
                                       <span className='sr-only'>Share</span>
                                     </Button>
-                                    <Button size={'icon'} variant={'ghost'} onClick={() => deletePost(post[0])}>
+                                    <Button size={'icon'} variant={'ghost'} onClick={() => deleteWorkspace(id)} disabled={loading}>
                                       <Trash2 className='h-4 w-4' />
-                                      <span className='sr-only'>Delete</span>
+                                      <span className='sr-only'>Delete Workspace</span>
                                     </Button>
                                   </div>
-                                  <div className="text-sm text-gray-500 dark:text-gray-400">{formatDistanceToNow(new Date(post[0].createdAt), { addSuffix: true })}</div>
+                                  <div className="text-sm text-gray-500 dark:text-gray-400">{formatDistanceToNow(new Date(createdAt), { addSuffix: true })}</div>
                                 </CardFooter>
                               </Card>
                             </div>
