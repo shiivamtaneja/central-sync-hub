@@ -25,7 +25,7 @@ const WorkspacePosts = ({ params }: { params: { workspace_id: string } }) => {
     options: {
       method: 'GET'
     },
-    queryFn: `/workspace/post?p_id=${userData?.user.email}&w_id=${params.workspace_id}`,
+    queryFn: `/subscriptions/workspace/post?p_id=${userData?.user.email}&w_id=${params.workspace_id}`,
     status
   });
 

@@ -89,6 +89,10 @@ const PublishPage = () => {
     setWorkspaceId(workspace_id);
   };
 
+  const handleWorkspaceClick = (workspace_id: string) => {
+    router.push(`/publish/${workspace_id}`);
+  };
+
   return (
     <>
       <div className='flex flex-col h-full gap-3'>
@@ -117,7 +121,9 @@ const PublishPage = () => {
                     {data.data.map(({ name, createdAt, id, post }, index) => (
                       <div className='flex flex-col gap-2' key={index}>
                         <p className='flex gap-2 items-center'>
-                          <span>{name}</span>
+                          <span onClick={() => handleWorkspaceClick(id)} className="cursor-pointer underline underline-offset-2">
+                            {name}
+                          </span>
                           {post.length !== 0 &&
                             <span
                               onClick={() => handlePostAdd(id)}
